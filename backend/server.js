@@ -14,6 +14,9 @@ app.use(express.json());
 
 // API 라우트 설정
 app.use('/api/users', require('./src/api/userRoutes'));
+app.use('/api/marketplace', require('./src/api/marketplaceRoutes'));
+app.use('/api/community', require('./src/api/communityRoutes'));
+app.use('/api/chatbot', require('./src/api/chatbotRoutes'));
 
 app.get('/', (req, res) => {
   res.send('Evergreen API is running...');

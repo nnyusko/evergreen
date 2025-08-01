@@ -1,24 +1,27 @@
-const mongoose = require('mongoose');
+const users = []; // In-memory user store
+let nextId = 1;
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
+const User = {
+  async findOne({ email }) {
+    return users.find(user => user.email === email);
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  // ... 기타 필드 (건강 데이터, 구독 등)
-}, {
-  timestamps: true,
-});
 
-const User = mongoose.model('User', userSchema);
+  async findById(id) {
+    return users.find(user => user._id === id);
+  },
+
+  async create({ name, email, password }) {
+    const newUser = {
+      _id: String(nextId++),
+      name,
+      email,
+      password,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    users.push(newUser);
+    return newUser;
+  },
+};
 
 module.exports = User;

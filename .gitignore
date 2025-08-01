@@ -2,3 +2,17 @@
 # Environment variables
 .env
 backend/.env
+
+# Node modules
+node_modules/
+
+# Expo
+.expo/
+
+# Logs
+*.log
+
+# Misc
+*.DS_Store
+Thumbs.db
+

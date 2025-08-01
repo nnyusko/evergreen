@@ -1,16 +1,25 @@
-import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../screens/HomeScreen';
-import LoginScreen from '../screens/LoginScreen';
-
-const Stack = createStackNavigator();
+import React, { useContext } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import AuthNavigator from './AuthNavigator';
+import MainTabs from './MainTabs';
+import { AuthContext } from '../context/AuthContext';
+import { ActivityIndicator, View } from 'react-native';
 
 const AppNavigator = () => {
+  const { user, isLoading } = useContext(AuthContext);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
-    </Stack.Navigator>
+    <NavigationContainer>
+      {user ? <MainTabs /> : <AuthNavigator />}
+    </NavigationContainer>
   );
 };
 
