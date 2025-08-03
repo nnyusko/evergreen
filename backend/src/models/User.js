@@ -1,27 +1,26 @@
-const users = []; // In-memory user store
-let nextId = 1;
+const mongoose = require('mongoose');
 
-const User = {
-  async findOne({ email }) {
-    return users.find(user => user.email === email);
+const userSchema = mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
+  {
+    timestamps: true,
+  }
+);
 
-  async findById(id) {
-    return users.find(user => user._id === id);
-  },
-
-  async create({ name, email, password }) {
-    const newUser = {
-      _id: String(nextId++),
-      name,
-      email,
-      password,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    users.push(newUser);
-    return newUser;
-  },
-};
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -1,8 +1,6 @@
-const OpenAI = require('openai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
 // @desc    Chat with AI
 // @route   POST /api/chatbot
@@ -11,17 +9,24 @@ const chatWithAI = async (req, res) => {
   const { message } = req.body;
 
   try {
-    const completion = await openai.chat.completions.create({
-      messages: [
-        { role: 'system', content: 'You are a helpful assistant for seniors.' },
-        { role: 'user', content: message },
+    const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+    const chat = model.startChat({
+      history: [
+        { role: "user", parts: "You are a helpful assistant for seniors." },
+        { role: "model", parts: "Great to meet you. What would you like to know?" },
       ],
-      model: 'gpt-3.5-turbo',
+      generationConfig: {
+        maxOutputTokens: 100,
+      },
     });
 
-    res.json({ reply: completion.choices[0].message.content });
+    const result = await chat.sendMessage(message);
+    const response = await result.response;
+    const text = response.text();
+
+    res.json({ reply: text });
   } catch (error) {
-    console.error('Error communicating with OpenAI:', error);
+    console.error('Error communicating with Google AI:', error);
     res.status(500).json({ message: 'Error communicating with AI service' });
   }
 };
